@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Ensure we're on main branch
-if [[ $(git branch --show-current) != "main" ]]; then
-    echo "Must be on main branch"
+if [[ $(git branch --show-current) != "master" ]]; then
+    echo "Must be on master branch"
     exit 1
 fi
 
