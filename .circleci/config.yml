@@ -40,7 +40,7 @@ commands:
       - run:
           name: Upload to index
           command: |
-            export POETRY_PYPI_TOKEN_PYPI="${TWINE_PASSWORD}"
+            export POETRY_PYPI_TOKEN_PYPI="${PROD_PYPI_TOKEN}"
             poetry publish
 
 workflows:
@@ -48,7 +48,7 @@ workflows:
     jobs:
       - pypi-release:
           context: 
-            - python-packages
+            - skulk-packages
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
