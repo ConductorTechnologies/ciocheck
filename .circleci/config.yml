@@ -36,11 +36,18 @@ commands:
             poetry build
             
   upload_to_index:
+    parameters:
+      username:
+        default: "__token__"
+        type: string
+      password:
+        default: ${PROD_PYPI_TOKEN}
+        type: string
     steps:
       - run:
           name: Upload to index
           command: |
-            export POETRY_PYPI_TOKEN_PYPI="${PROD_PYPI_TOKEN}"
+            poetry config pypi-token.pypi << parameters.password >>
             poetry publish
 
 workflows:
@@ -48,7 +55,7 @@ workflows:
     jobs:
       - pypi-release:
           context: 
-            - skulk-packages
+            - skulk-context
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
