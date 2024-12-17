@@ -27,14 +27,14 @@ commands:
           name: Unit tests
           command: |
             poetry run python -m unittest discover -s ./tests -p 'test_*.py'
-            
+
   create_pip_package:
     steps:
       - run:
           name: Create package
           command: |
             poetry build
-            
+
   upload_to_index:
     parameters:
       username:
@@ -54,7 +54,7 @@ workflows:
   main:
     jobs:
       - pypi-release:
-          context: 
+          context:
             - skulk-context
           filters:
             tags:

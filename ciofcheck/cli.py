@@ -94,7 +94,7 @@ def run(pattern, display=DisplayOptions.SUMMARY.value, width=DEFAULT_WIDTH):
         None
     """
 
-    logger.debug("Running ciocheck.py")
+    logger.debug("Running ciofcheck.py")
 
     if width <= 0:
         raise ValueError("Width must be positive")

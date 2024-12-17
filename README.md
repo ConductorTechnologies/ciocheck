@@ -1,4 +1,4 @@
-# ciocheck
+# ciofcheck
 
 A command-line tool for analyzing and validating image sequences. Easily check for missing frames, verify file sizes, and visualize sequence patterns.
 
@@ -6,14 +6,14 @@ A command-line tool for analyzing and validating image sequences. Easily check f
 
 Install directly from PyPI:
 ```bash
-pip install ciocheck
+pip install ciofcheck
 ```
 
 ## Usage
 
 Basic usage:
 ```bash
-ciocheck "myfile[1-100####].png"
+ciofcheck "myfile[1-100####].png"
 ```
 
 The pattern syntax supports:
@@ -24,26 +24,26 @@ The pattern syntax supports:
 ### Options
 
 ```bash
-ciocheck --help
+ciofcheck --help
 ```
 
 ### Output Formats
 
 1. **Summary** (default)
    ```bash
-   ciocheck "myfile[1-100####].png"
+   ciofcheck "myfile[1-100####].png"
    ```
    Shows basic statistics about the sequence including missing frames and file sizes.
 
 2. **ASCII Chart**
    ```bash
-   ciocheck "myfile[1-100####].png" --format ascii
+   ciofcheck "myfile[1-100####].png" --format ascii
    ```
    Displays a text-based visualization of file sizes.
 
 3. **Bar Chart**
    ```bash
-   ciocheck "myfile[1-100####].png" --format bar
+   ciofcheck "myfile[1-100####].png" --format bar
    ```
    Opens an interactive bar chart visualization.
 
@@ -51,17 +51,17 @@ ciocheck --help
 
 Check a sequence of PNG files:
 ```bash
-ciocheck "render[1-100####].png"
+ciofcheck "render[1-100####].png"
 ```
 
 Analyze specific frames:
 ```bash
-ciocheck "shot[1,5,10-20####].exr"
+ciofcheck "shot[1,5,10-20####].exr"
 ```
 
 View as ASCII chart with custom width:
 ```bash
-ciocheck "frame[1-50###].jpg" --format ascii --width 120
+ciofcheck "frame[1-50###].jpg" --format ascii --width 120
 ```
 
 ## Contributing
@@ -80,8 +80,8 @@ Contributions are welcome! Here's how you can help:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/conductorTechnologies/ciocheck.git
-   cd ciocheck
+   git clone https://github.com/conductorTechnologies/ciofcheck.git
+   cd ciofcheck
    ```
 
 2. Install Poetry if you haven't already:

@@ -1,5 +1,5 @@
 import unittest
-from ciocheck.cli import _human_file_size
+from ciofcheck.cli import _human_file_size
 
 class TestHumanFileSize(unittest.TestCase):
     def test_human_file_size_conversion(self):
