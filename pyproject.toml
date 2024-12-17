@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ciocheck"
-version = "0.1.4"
+version = "0.1.5"
 description = "A tool for checking and analyzing image sequences"
 authors = ["Julian Mann <jmann@coreweave.com>"]
 readme = "README.md"
