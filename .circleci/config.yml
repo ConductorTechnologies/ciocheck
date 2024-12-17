@@ -27,34 +27,28 @@ commands:
           name: Unit tests
           command: |
             poetry run python -m unittest discover -s ./tests -p 'test_*.py'
+            
   create_pip_package:
     steps:
       - run:
           name: Create package
           command: |
             poetry build
+            
   upload_to_index:
-    parameters:
-      index:
-        default: "pypi"
-        type: string
-      username:
-        default: "__token__"
-        type: string
-      password:
-        default: $PROD_PYPI_TOKEN
-        type: string
     steps:
       - run:
           name: Upload to index
           command: |
-            poetry config pypi-token.pypi $PROD_PYPI_TOKEN
+            export POETRY_PYPI_TOKEN_PYPI="${TWINE_PASSWORD}"
             poetry publish
 
 workflows:
   main:
     jobs:
       - pypi-release:
+          context: 
+            - python-packages
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
