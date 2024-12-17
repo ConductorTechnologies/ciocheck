@@ -3,15 +3,30 @@ version: 2.1
 orbs:
   python: circleci/python@2.1.1
 
+jobs:
+  pypi-release:
+    docker:
+      - image: cimg/python:3.11.9
+    steps:
+      - checkout
+      - run:
+          name: Install Poetry
+          command: |
+            curl -sSL https://install.python-poetry.org | python3 -
+      - run:
+          name: Install Dependencies
+          command: poetry install
+      - run_tests
+      - create_pip_package
+      - upload_to_index
+
 commands:
   run_tests:
     steps:
       - run:
           name: Unit tests
           command: |
-            git checkout -b test-branch-`git rev-parse --short HEAD`
-            python -m unittest discover -s ./tests -p 'test_*.py'
-
+            poetry run python -m unittest discover -s ./tests -p 'test_*.py'
   create_pip_package:
     steps:
       - run:
@@ -27,7 +42,7 @@ commands:
         default: "__token__"
         type: string
       password:
-        default: $PYPI_TOKEN
+        default: $PROD_PYPI_TOKEN
         type: string
     steps:
       - run:
@@ -35,21 +50,6 @@ commands:
           command: |
             poetry config pypi-token.pypi $PROD_PYPI_TOKEN
             poetry publish
-jobs:
-  pypi-release:
-    executor: python/default
-    steps:
-      - checkout
-      - run:
-          name: Install Poetry
-          command: |
-            curl -sSL https://install.python-poetry.org | python3 -
-      - run:
-          name: Install Dependencies
-          command: poetry install
-      - run_tests
-      - create_pip_package
-      - upload_to_index
 
 workflows:
   main:
