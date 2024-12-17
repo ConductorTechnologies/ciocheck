@@ -2,49 +2,24 @@ version: 2.1
 
 orbs:
   python: circleci/python@2.1.1
-  slack: circleci/slack@4.3.1
 
-parameters:
-  dcc_logo:
-    default: "https://downloads.conductortech.com/images/ciocheck.png"
-    type: string
-  dcc_name:
-    default: "check"
-    type: string
-  dcc_full_name:
-    default: "CioCheck"
-    type: string
-  nice_name:
-    default: "Conductor Sequence Checker"
-    type: string
 commands:
-  populate_bashenv:
-    steps:
-      - run:
-          name: Populate Bash Env
-          # The section below creates two text files and reads their contents into BASH_ENV for use in the Slack notification.
-          # * The file changelog_summary.txt contains the last changelog entry.
-          # * The file pypi_version.txt contains the pypi conversion of the semver version.
-          command: |
-            skulk-parse ./CHANGELOG.md > changelog_summary.txt
-            skulk-parse ./VERSION >  pypi_version.txt
-            echo 'export CHANGELOG_SUMMARY="$(cat changelog_summary.txt)" ' >> $BASH_ENV
-            echo 'export PYPI_VERSION="$(cat pypi_version.txt)" ' >> $BASH_ENV
   run_tests:
     steps:
       - run:
           name: Unit tests
-          # We have to check out a throwaway branch in order to run the tests.
           command: |
             git checkout -b test-branch-`git rev-parse --short HEAD`
             python -m unittest discover -s ./tests -p 'test_*.py'
+            
   create_pip_package:
     steps:
       - run:
           name: Create package
           command: |
             python setup.py clean --all
-            python setup.py  bdist_wheel
+            python setup.py bdist_wheel
+            
   upload_to_index:
     parameters:
       index:
@@ -62,155 +37,9 @@ commands:
           command: |
             export TWINE_USERNAME="<< parameters.username >>"
             export TWINE_PASSWORD="<< parameters.password >>"
-            twine upload  -r <<parameters.index>>  dist/*
+            twine upload -r <<parameters.index>> dist/*
 
-  notify_slack_pass:
-    parameters:
-      emoji:
-        default: ":large_green_circle:"
-        type: string
-      audience:
-        default: "Full release"
-        type: string
-      conductor_folder:
-        default: "~/Conductor"
-        type: string
-    steps:
-      - slack/notify:
-          event: pass
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": " <<parameters.emoji>> << pipeline.parameters.nice_name >> $(cat VERSION) is available!",
-                    "emoji": true
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-              	    "text": "*Audience*: << parameters.audience >>\n*Tag*: ${CIRCLE_TAG}\n*Date*: $(date +'%d %B %Y %T')\n*Author*: ${CIRCLE_USERNAME}"
-                  },
-                  "accessory": {
-                    "type": "image",
-                    "image_url": "<< pipeline.parameters.dcc_logo >>",
-                    "alt_text": "<< pipeline.parameters.dcc_full_name >>"
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Installation"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "```python -m pip install ${CIRCLE_PROJECT_REPONAME}==${PYPI_VERSION}```\n"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Note*: If `python` is not found, try `python3`."
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Recent changes"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "${CHANGELOG_SUMMARY}"
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "PyPi",
-                        "emoji": true
-                      },
-                      "value": "click_me_123",
-                      "url": "https://pypi.org/project/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_TAG}/"
-                    },
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "GitHub",
-                        "emoji": true
-                      },
-                      "value": "click_me_123",
-                      "url": "https://github.com/ConductorTechnologies/${CIRCLE_PROJECT_REPONAME}/tree/${CIRCLE_TAG}"
-                    },
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "CircleCI",
-                        "emoji": true
-                      },
-                      "value": "click_me_123",
-                      "url": "${CIRCLE_BUILD_URL}"
-                    }
-                  ]
-                }
-              ]
-            }
 jobs:
-  pypi-beta-release:
-    executor: python/default
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          pip-dependency-file: requirements.txt
-      - run_tests
-      - create_pip_package
-      - upload_to_index
-      - populate_bashenv
-      - notify_slack_pass:
-          emoji: ":large_purple_circle:"
-          audience: "Internal testing"
-  pypi-prerelease:
-    executor: python/default
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          pip-dependency-file: requirements.txt
-      - run_tests
-      - create_pip_package
-      - upload_to_index
-      - populate_bashenv
-      - notify_slack_pass:
-          emoji: ":large_blue_circle:"
-          audience: "Release candidate"
   pypi-release:
     executor: python/default
     steps:
@@ -221,38 +50,13 @@ jobs:
       - run_tests
       - create_pip_package
       - upload_to_index
-      - populate_bashenv
-      - notify_slack_pass:
-          emoji: ":large_green_circle:"
-          audience: "Full release"
 
 workflows:
   main:
     jobs:
-      - pypi-prerelease:
-          context:
-            - skulk-context
-            - slack-context
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+(-rc\.\d+)$/
-            branches:
-              ignore: /.*/
       - pypi-release:
-          context:
-            - skulk-context
-            - slack-context
           filters:
             tags:
               only: /^\d+\.\d+\.\d+$/
-            branches:
-              ignore: /.*/
-      - pypi-beta-release:
-          context:
-            - skulk-context
-            - slack-context
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+(-beta\.\d+)$/
             branches:
               ignore: /.*/

@@ -99,12 +99,6 @@ Contributions are welcome! Here's how you can help:
    poetry shell
    ```
 
-### Running Tests
-
-```bash
-poetry run pytest
-```
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
