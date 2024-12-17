@@ -8,3 +8,6 @@
 
 ### Fixed
 - Bug Z
+
+## [0.1.2] - 2024-12-17
+Initial deploy
