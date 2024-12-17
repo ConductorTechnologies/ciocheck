@@ -18,6 +18,9 @@ pyperclip = "^1.9.0"
 ciofcheck = "ciofcheck.cli:main"
 test = "unittest:main"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

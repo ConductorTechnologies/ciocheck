@@ -27,7 +27,7 @@ The pattern syntax supports:
 ciofcheck --help
 ```
 
-### Output Formats
+### Display Options
 
 1. **Summary** (default)
    ```bash
@@ -37,13 +37,13 @@ ciofcheck --help
 
 2. **ASCII Chart**
    ```bash
-   ciofcheck "myfile[1-100####].png" --format ascii
+   ciofcheck "myfile[1-100####].png" --display ascii
    ```
    Displays a text-based visualization of file sizes.
 
 3. **Bar Chart**
    ```bash
-   ciofcheck "myfile[1-100####].png" --format bar
+   ciofcheck "myfile[1-100####].png" --display bar
    ```
    Opens an interactive bar chart visualization.
 
@@ -61,7 +61,7 @@ ciofcheck "shot[1,5,10-20####].exr"
 
 View as ASCII chart with custom width:
 ```bash
-ciofcheck "frame[1-50###].jpg" --format ascii --width 120
+ciofcheck "frame[1-50###].jpg" --display ascii --width 120
 ```
 
 ## Contributing
