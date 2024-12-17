@@ -11,15 +11,13 @@ commands:
           command: |
             git checkout -b test-branch-`git rev-parse --short HEAD`
             python -m unittest discover -s ./tests -p 'test_*.py'
-            
+
   create_pip_package:
     steps:
       - run:
           name: Create package
           command: |
-            python setup.py clean --all
-            python setup.py bdist_wheel
-            
+            poetry build
   upload_to_index:
     parameters:
       index:
@@ -29,24 +27,26 @@ commands:
         default: "__token__"
         type: string
       password:
-        default: $PROD_PYPI_TOKEN
+        default: $PYPI_TOKEN
         type: string
     steps:
       - run:
           name: Upload to index
           command: |
-            export TWINE_USERNAME="<< parameters.username >>"
-            export TWINE_PASSWORD="<< parameters.password >>"
-            twine upload -r <<parameters.index>> dist/*
-
+            poetry config pypi-token.pypi $PROD_PYPI_TOKEN
+            poetry publish
 jobs:
   pypi-release:
     executor: python/default
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          pip-dependency-file: requirements.txt
+      - run:
+          name: Install Poetry
+          command: |
+            curl -sSL https://install.python-poetry.org | python3 -
+      - run:
+          name: Install Dependencies
+          command: poetry install
       - run_tests
       - create_pip_package
       - upload_to_index
