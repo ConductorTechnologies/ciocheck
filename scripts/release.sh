@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ensure we're on main branch
+# Ensure we're on master branch
 if [[ $(git branch --show-current) != "master" ]]; then
     echo "Must be on master branch"
     exit 1
@@ -40,9 +40,9 @@ echo "Ready to push? (y/n)"
 read CONFIRM
 
 if [[ $CONFIRM == "y" ]]; then
-    git push origin main v$NEW_VERSION
+    git push origin master v$NEW_VERSION
     echo "Pushed! CircleCI will handle the PyPI release"
 else
     echo "Cancelled. You'll need to push manually:"
-    echo "git push origin main v$NEW_VERSION"
+    echo "git push origin master v$NEW_VERSION"
 fi
