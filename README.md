@@ -70,11 +70,22 @@ Contributions are welcome! Here's how you can help:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run the tests (`poetry run pytest`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+3. Install Poetry if you haven't already:
+   ```bash
+   curl -sSL https://install.python-poetry.org | python3 -
+   ```
+4. Install project dependencies:
+   ```bash
+   poetry install
+   ```
+5. Make your changes
+6. Run the tests:
+   ```bash
+   poetry run pytest
+   ```
+7. Commit your changes (`git commit -m 'Add amazing feature'`)
+8. Push to the branch (`git push origin feature/amazing-feature`)
+9. Open a Pull Request
 
 ### Development Setup
 
